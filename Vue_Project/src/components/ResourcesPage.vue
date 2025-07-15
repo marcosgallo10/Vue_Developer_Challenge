@@ -291,12 +291,12 @@ body, html {
   top: 1rem;
   right: 1rem;
   font-size: 2rem;
-  color: white;
+  color: rgb(255, 248, 248);
   cursor: pointer;
   transition: color 0.3s;
   z-index: 2;
 }
 .bookmark-icon.bookmarked {
-  color: orange;
+  color:#bb86fc
 }
 </style>
