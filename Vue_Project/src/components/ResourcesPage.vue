@@ -6,15 +6,15 @@ import { resources } from '../data/sample-resources';
 const visibleCount = ref(6);
 const selectedTag = ref<string[]>(['ALL']);
 const isDark = ref(false);
-const isBookmarked = ref(false);
-
 
 const toggleBookmark = (res: any) => {
-  res.isBookmarked = !res.isBookmarked;
-  return;
+  const resource = resources.find(r => r.title === res.title);
+  if (resource) {
+    resource.isBookmarked = !resource.isBookmarked;
+  }
 };
 
-const uniqueTags = computed(() => {
+const categoryTags = computed(() => {
   const tags = new Set<string>();
   resources.forEach(res => {
     if (res.category) tags.add(res.category);
@@ -23,18 +23,22 @@ const uniqueTags = computed(() => {
 });
 
 const toggleTag = (tag: string) => {
-  const allTags = uniqueTags.value;
+  const allTags = categoryTags.value;
   if (tag === 'ALL') {
-    selectedTag.value = ['ALL'];
-    return;
+    if (selectedTag.value.includes('ALL')) {
+      selectedTag.value = [];
+    } else {
+      selectedTag.value = ['ALL'];
+    }
   }
+
   if (selectedTag.value.includes(tag)) {
     selectedTag.value = selectedTag.value.filter(t => t !== tag);
     } else {
       selectedTag.value.push(tag);
     }
   selectedTag.value = selectedTag.value.filter(t => t !== 'ALL');
-  if (selectedTag.value.length === 0) {
+  if (selectedTag.value.length === 10) {
     selectedTag.value = ['ALL'];
   };
 };
@@ -49,7 +53,6 @@ return filtered.slice(0, visibleCount.value);
     : resources.filter(res => selectedTag.value.includes(res.category)).length;
 });
 
-
 const toggleDarkMode = () => {
   isDark.value = !isDark.value;
   document.documentElement.classList.toggle('dark', isDark.value);
@@ -59,6 +62,7 @@ onMounted(() => {
   isDark.value = savedMode === 'true';
   document.documentElement.classList.toggle('dark', isDark.value);
 });
+
 </script>
 
 <template>
@@ -79,7 +83,7 @@ onMounted(() => {
     <p> View and bookmark resources. </p>
     <div class="filter-tag">
       <button
-        v-for="tag in ['All', ...uniqueTags]"
+        v-for="tag in ['All', ...categoryTags]"
         :key="tag"
         :class="{ active: selectedTag.includes(tag) }"
         @click="toggleTag(tag)">
@@ -101,7 +105,7 @@ onMounted(() => {
           @click="toggleBookmark(res)"
           title="Bookmark" >
         {{ res.isBookmarked ? 'bookmark' : 'bookmark_border'}}
-        </span>
+          </span>
         </div>
       </div>
     </div>
@@ -110,7 +114,6 @@ onMounted(() => {
     </div>
   </section>
 </template>
-
 
 
 <style scoped>
