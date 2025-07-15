@@ -26,12 +26,10 @@ const toggleTag = (tag: string) => {
   const allTags = categoryTags.value;
   if (tag === 'ALL') {
     if (selectedTag.value.includes('ALL')) {
-      selectedTag.value = [];
-    } else {
-      selectedTag.value = ['ALL'];
+      selectedTag.value.length = 0;
+
     }
   }
-
   if (selectedTag.value.includes(tag)) {
     selectedTag.value = selectedTag.value.filter(t => t !== tag);
     } else {
@@ -40,7 +38,7 @@ const toggleTag = (tag: string) => {
   selectedTag.value = selectedTag.value.filter(t => t !== 'ALL');
   if (selectedTag.value.length === 10) {
     selectedTag.value = ['ALL'];
-  };
+  }
 };
 const filteredResources = computed(() => {
   const filtered = selectedTag.value.includes('ALL')
@@ -83,7 +81,7 @@ onMounted(() => {
     <p> View and bookmark resources. </p>
     <div class="filter-tag">
       <button
-        v-for="tag in ['All', ...categoryTags]"
+        v-for="tag in ['ALL', ...categoryTags]"
         :key="tag"
         :class="{ active: selectedTag.includes(tag) }"
         @click="toggleTag(tag)">
